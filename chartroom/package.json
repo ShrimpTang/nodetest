@@ -1,0 +1,9 @@
+{
+  "name": "chartroom",
+  "version": "0.0.1",
+  "description": "mini room",
+  "dependencies": {
+    "socket.io": "~0.9.8",
+    "mime": "~1.2.7"
+  }
+}

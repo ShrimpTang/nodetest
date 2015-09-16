@@ -11,7 +11,17 @@ var flash = require("connect-flash");
 var session = require("express-session");
 var mongoStore = require("connect-mongo")(session);
 var app = express();
-
+app.use(session({
+    secret:setting.cookieSecret,
+    key:setting.db,
+    cookie:{maxAge:1000*60*60*24*30},
+    store:new mongoStore({
+        db:setting.db,
+        host:setting.host,
+        port:setting.port
+    })
+}));
+app.use(flash());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -34,17 +44,7 @@ app.use(function (req, res, next) {
     next(err);
 });
 
-app.use(session({
-    secret:setting.cookieSecret,
-    key:setting.db,
-    cookie:{maxAge:1000*60*60*24*30},
-    store:new mongoStore({
-        db:setting.db,
-        host:setting.host,
-        port:setting.port
-    })
-}));
-app.use(flash());
+
 // error handlers
 
 // development error handler

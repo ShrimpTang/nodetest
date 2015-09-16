@@ -56,7 +56,6 @@ app.use(function(err, req, res, next) {
   });
 });
 
-
 module.exports = app;
 http.createServer(app).listen(3000, function () {
   console.log('fasdsdsdsdsdsdsdsd');

@@ -4,10 +4,12 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var setting = require("./setting")
 var routes = require('./routes/index');
 var users = require('./routes/users');
-
+var flash = require("connect-flash");
+var session = require("express-session");
+var mongoStore = require("connect-mongo")(session);
 var app = express();
 
 // view engine setup
@@ -32,6 +34,17 @@ app.use(function (req, res, next) {
     next(err);
 });
 
+app.use(session({
+    secret:setting.cookieSecret,
+    key:setting.db,
+    cookie:{maxAge:1000*60*60*24*30},
+    store:new mongoStore({
+        db:setting.db,
+        host:setting.host,
+        port:setting.port
+    })
+}));
+app.use(flash());
 // error handlers
 
 // development error handler
@@ -59,23 +72,23 @@ var MongoClient = require('mongodb').MongoClient
     , assert = require('assert');
 
 // Connection URL
-var url = 'mongodb://localhost:27017/myproject';
+var url = 'mongodb://localhost:27017/blog';
 // Use connect method to connect to the Server
-MongoClient.connect(url, function (err, db) {
-    assert.equal(null, err);
-    console.log("Connected correctly to server");
-    insertDoc(db, function () {
-        db.close();
-    })
-});
+//MongoClient.connect(url, function (err, db) {
+//    assert.equal(null, err);
+//    console.log("Connected correctly to server");
+//    insertDoc(db, function () {
+//        db.close();
+//    })
+//});
 
-var insertDoc = function (db, callback) {
-    var collection = db.collection('doc');
-    collection.insert([{a: 1}, {a: 2}, {a: 3}], function (err, reslut) {
-        console.info(reslut.result.n + '@@' + reslut.ops.length);
-        callback(reslut);
-    });
-
-}
+//var insertDoc = function (db, callback) {
+//    var collection = db.collection('doc');
+//    collection.insert([{a: 1}, {a: 2}, {a: 3}], function (err, reslut) {
+//        console.info(reslut.result.n + '@@' + reslut.ops.length);
+//        callback(reslut);
+//    });
+//
+//}
 
 module.exports = app;

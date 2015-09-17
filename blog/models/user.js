@@ -2,7 +2,7 @@ var MongoClient = require('mongodb').MongoClient
     , assert = require('assert');
 var setting = require('../setting')
 
-var url = 'mongodb://localhost:27017/blog';
+var url = setting.url;
 
 function User(user) {
     this.name = user.name;
@@ -46,7 +46,7 @@ User.get = function (name, callback) {
         }
         db.collection('users', function (err, collection) {
             if (err) {
-                MongoClient.close();
+                db.close();
                 return callback(err);
             }
             collection.findOne({name: name}, function (err, user) {

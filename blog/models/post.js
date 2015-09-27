@@ -30,7 +30,8 @@ Post.prototype.save = function (callback) {
         name: this.name,
         post: this.post,
         title: this.title,
-        time: time
+        time: time,
+        comments:[]
     }
 
     MongoClient.connect(url, function (err, db) {
@@ -103,7 +104,13 @@ Post.getOne = function (name, day, title, isMarkdown, callback) {
                     return callback(err);
                 }
                 if (isMarkdown) {
-                    doc.post = markdown.parse(doc.post);
+                    if(doc.post){
+                        doc.post = markdown.parse(doc.post);
+                        doc.comments.forEach(function (comment) {
+                            comment.content = markdown.parse(comment.content);
+                        });
+                    }
+                  
                 }
                 callback(null, doc);
             });
